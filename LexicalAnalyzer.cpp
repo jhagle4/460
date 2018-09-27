@@ -1,4 +1,5 @@
 #include <iomanip>
+#include <vector>
 #include <cstdlib>
 #include "LexicalAnalyzer.h"
 
@@ -12,11 +13,11 @@ LexicalAnalyzer::LexicalAnalyzer (char * filename)
 {
   // This function will initialize the lexical analyzer class
   vector<string> lines;
-  string line = ""
+  string line = "";
   ifstream input(filename);
   while (getline(input, line))
     {
-      lines.append(line);
+      lines.push_back(line);
     }
   int linenum = 0;
   int pos = 0;
@@ -31,7 +32,7 @@ LexicalAnalyzer::LexicalAnalyzer (char * filename)
     {IDENT_T,IDENT_T,5,5,5,5,5,5,Predicate,IDENT_T,IDENT_T,IDENT_T,IDENT_T,IDENT_T,IDENT_T,IDENT_T,IDENT_T,IDENT_T,IDENT_T,5,IDENT_T},
     {GT_T,GT_T,GT_T,GT_T,GT_T,GT_T,GT_T,GT_T,GT_T,GTE_T,GT_T,GT_T,GT_T,GT_T,GT_T,GT_T,GT_T,GT_T,GT_T,GT_T,GT_T},
     {LT_T,LT_T,LT_T,LT_T,LT_T,LT_T,LT_T,LT_T,LT_T,LTE_T,LT_T,LT_T,LT_T,LT_T,LT_T,LT_T,LT_T,LT_T,LT_T,LT_T,LT_T},
-    {9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,STRIT_T},
+    {9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,STRLIT_T},
     {NUMLIT_T,NUMLIT_T,18,NUMLIT_T,NUMLIT_T,NUMLIT_T,NUMLIT_T,NUMLIT_T,NUMLIT_T,NUMLIT_T,NUMLIT_T,NUMLIT_T,NUMLIT_T,NUMLIT_T,NUMLIT_T,NUMLIT_T,NUMLIT_T,NUMLIT_T,NUMLIT_T,NUMLIT_T,NUMLIT_T},
     {IDENT_T,IDENT_T,5,5,5,19,LISTOP_T,5,Predicate,IDENT_T,IDENT_T,IDENT_T,IDENT_T,IDENT_T,IDENT_T,IDENT_T,IDENT_T,IDENT_T,IDENT_T,5,IDENT_T}
   };
@@ -47,13 +48,14 @@ token_type LexicalAnalyzer::GetToken ()
   // This function will find the next lexeme int the input file and return
   // the token_type value associated with that lexeme
   int state = 0;
-  int value = GD;
+  int value = 0;
   line = lines[linenum];
-  char c = line[pos];
+  char c;
   string word = "";
-  bool done = false
+  bool done = false;
   while(done == false)
     {
+      c = line[pos];
       word += c;
       if(c == '+')
 	{
@@ -165,14 +167,53 @@ token_type LexicalAnalyzer::GetToken ()
 	  if(word == "cons")
 	    state = CONS_T;
 	  else if (word == "if")
-	    state = IF_T
-	      
+	    state = IF_T;
+	  else if (word == "else")
+	    state = ELSE_T;
+	  else if (word == "cond")
+	    state = COND_T;
+	  else if (word == "display")
+	    state = DISPLAY_T;
+	  else if (word == "newline")
+	    state = NEWLINE_T;
+	  else if (word == "and")
+	    state = AND_T;
+	  else if (word == "or")
+	    state = OR_T;
+	  else if (word == "not")
+	    state = NOT_T;
+	  else if (word == "define")
+	    state = DEFINE_T;
+	  else if (word == "modulo")
+	    state = MODULO_T;
+	  else if (word == "round")
+	    state = ROUND_T;	      
 	}
+      if(state == Predicate)
+	if(word == "number?")
+	  state = NUMBERP_T;
+	else if( word == "list?")
+	  state = LISTP_T;
+	else if(word == "zero?")
+	  state = ZEROP_T;
+	else if (word == "null?")
+	  state = NULLP_T;
+	else if (word == "string?")
+	  state = STRINGP_T;
+      if(pos == line.length())
+	linenum++;
       if (state == PLUS_T || state == MINUS_T || state == NUMLIT_T || state == IDENT_T || state == GT_T || state == LT_T)
 	{
 	  pos--;
-	  token = token_names[state]
+	  token = state;
+	  done = true;
 	}
+      else if (state == LISTOP_T || state == EQUALTO_T || state == GTE_T || state == LTE_T || state == STRIT_T || state == DIV_T || state == MULT_T || state == LPAREN_T || state == RPAREN_T || state == SQUOTE_T || state == ERROR_T)
+	{
+	  token = state;
+	  done = true;
+	}
+      pos++;
     }
   
   return token;
