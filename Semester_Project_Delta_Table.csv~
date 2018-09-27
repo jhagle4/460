@@ -1,0 +1,12 @@
+,,"""+""","""-""","""#""","""C""","""A""","""D""","""R""","""_""","""?""","""=""",""">""","""<""","""/""","""*""","""("""," "")""",""" ' """,""".""",""" ""","""alpha -cadr""",""" "" """
+,0,1,2,3,4,5,5,5,ERROR_T,ERROR_T,Equalt_t,7,8,Div_T,Mult_T,LParen_T,RParen_T,SQuote_T,ERROR_T,0,5,9
+,1,Plus_T,Plus_T,3,Plus_T,Plus_T,Plus_T,Plus_T,Plus_T,Plus_T,Plus_T,Plus_T,Plus_T,Plus_T,Plus_T,Plus_T,Plus_T,Plus_T,18,Plus_T,15,Plus_T
+,2,Minus_T,Minus_T,3,Minus_T,Minus_T,Minus_T,Minus_T,Minus_T,Minus_T,Minus_T,Minus_T,Minus_T,Minus_T,Minus_T,Minus_T,Minus_T,Minus_T,18,Minus_T,16,Minus_T
+,3,Numlit_T,Numlit_T,3,Numlit_T,Numlit_T,Numlit_T,Numlit_T,Numlit_T,Numlit_T,Numlit_T,Numlit_T,Numlit_T,Numlit_T,Numlit_T,Numlit_T,Numlit_T,Numlit_T,18,Numlit_T,Numlit_T,Numlit_T
+,4,Ident_T,Ident_T,5,5,19,19,5,5,Predicate,Ident_T,Ident_T,Ident_T,Ident_T,Ident_T,Ident_T,Ident_T,Ident_T,Ident_T,Ident_T,5,Ident_T
+,5,Ident_T,Ident_T,5,5,5,5,5,5,Predicate,Ident_T,Ident_T,Ident_T,Ident_T,Ident_T,Ident_T,Ident_T,Ident_T,Ident_T,Ident_T,5,Ident_T
+,7,GT_T,GT_T,GT_T,GT_T,GT_T,GT_T,GT_T,GT_T,GT_T,GTE_T,GT_T,GT_T,GT_T,GT_T,GT_T,GT_T,GT_T,GT_T,GT_T,GT_T,GT_T
+,8,LT_T,LT_T,LT_T,LT_T,LT_T,LT_T,LT_T,LT_T,LT_T,LTE_T,LT_T,LT_T,LT_T,LT_T,LT_T,LT_T,LT_T,LT_T,LT_T,LT_T,LT_T
+,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,STRIT_T
+,18,Numlit_T,Numlit_T,18,Numlit_T,Numlit_T,Numlit_T,Numlit_T,Numlit_T,Numlit_T,Numlit_T,Numlit_T,Numlit_T,Numlit_T,Numlit_T,Numlit_T,Numlit_T,Numlit_T,Numlit_T,Numlit_T,Numlit_T,Numlit_T
+,19,Ident_T,Ident_T,5,5,5,19,LISTOP_T,5,Predicate,Ident_T,Ident_T,Ident_T,Ident_T,Ident_T,Ident_T,Ident_T,Ident_T,Ident_T,Ident_T,5,Ident_T
