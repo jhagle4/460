@@ -12,30 +12,19 @@ static string token_names[] = {	"EOF_T", "IDENT_T", "NUMLIT_T", "STRLIT_T", "LIS
 LexicalAnalyzer::LexicalAnalyzer (char * filename)
 {
   // This function will initialize the lexical analyzer class
-  vector<string> lines;
+  vector<string> tmp;
   string line = "";
   ifstream input(filename);
   while (getline(input, line))
     {
-      lines.push_back(line);
+      cout << line << endl;
+      tmp.push_back(line);
     }
+  lines = tmp;
   int linenum = 0;
   int pos = 0;
   string lexeme = "EOF_T";
   int errors = 0;
-  int DFA[11][21] = {
-    {1,2,3,4,5,5,5,ERROR_T,ERROR_T,EQUALTO_T,7,8,DIV_T,MULT_T,LPAREN_T,RPAREN_T,SQUOTE_T,ERROR_T,0,5,9},
-    {PLUS_T,PLUS_T,3,PLUS_T,PLUS_T,PLUS_T,PLUS_T,PLUS_T,PLUS_T,PLUS_T,PLUS_T,PLUS_T,PLUS_T,PLUS_T,PLUS_T,PLUS_T,PLUS_T,18,PLUS_T,15,PLUS_T},
-    {MINUS_T,MINUS_T,3,MINUS_T,MINUS_T,MINUS_T,MINUS_T,MINUS_T,MINUS_T,MINUS_T,MINUS_T,MINUS_T,MINUS_T,MINUS_T,MINUS_T,MINUS_T,MINUS_T,18,MINUS_T,16,MINUS_T},
-    {NUMLIT_T,NUMLIT_T,3,NUMLIT_T,NUMLIT_T,NUMLIT_T,NUMLIT_T,NUMLIT_T,NUMLIT_T,NUMLIT_T,NUMLIT_T,NUMLIT_T,NUMLIT_T,NUMLIT_T,NUMLIT_T,NUMLIT_T,NUMLIT_T,18,NUMLIT_T,NUMLIT_T,NUMLIT_T},
-    {IDENT_T,IDENT_T,5,5,19,19,5,5,Predicate,IDENT_T,IDENT_T,IDENT_T,IDENT_T,IDENT_T,IDENT_T,IDENT_T,IDENT_T,IDENT_T,IDENT_T,5,IDENT_T},
-    {IDENT_T,IDENT_T,5,5,5,5,5,5,Predicate,IDENT_T,IDENT_T,IDENT_T,IDENT_T,IDENT_T,IDENT_T,IDENT_T,IDENT_T,IDENT_T,IDENT_T,5,IDENT_T},
-    {GT_T,GT_T,GT_T,GT_T,GT_T,GT_T,GT_T,GT_T,GT_T,GTE_T,GT_T,GT_T,GT_T,GT_T,GT_T,GT_T,GT_T,GT_T,GT_T,GT_T,GT_T},
-    {LT_T,LT_T,LT_T,LT_T,LT_T,LT_T,LT_T,LT_T,LT_T,LTE_T,LT_T,LT_T,LT_T,LT_T,LT_T,LT_T,LT_T,LT_T,LT_T,LT_T,LT_T},
-    {9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,STRLIT_T},
-    {NUMLIT_T,NUMLIT_T,18,NUMLIT_T,NUMLIT_T,NUMLIT_T,NUMLIT_T,NUMLIT_T,NUMLIT_T,NUMLIT_T,NUMLIT_T,NUMLIT_T,NUMLIT_T,NUMLIT_T,NUMLIT_T,NUMLIT_T,NUMLIT_T,NUMLIT_T,NUMLIT_T,NUMLIT_T,NUMLIT_T},
-    {IDENT_T,IDENT_T,5,5,5,19,LISTOP_T,5,Predicate,IDENT_T,IDENT_T,IDENT_T,IDENT_T,IDENT_T,IDENT_T,IDENT_T,IDENT_T,IDENT_T,IDENT_T,5,IDENT_T}
-  };
 }
 
 LexicalAnalyzer::~LexicalAnalyzer ()
@@ -57,6 +46,7 @@ token_type LexicalAnalyzer::GetToken ()
     {
       c = line[pos];
       word += c;
+      cout << word << endl;
       if(c == '+')
 	{
 	  value = 0;
@@ -146,6 +136,7 @@ token_type LexicalAnalyzer::GetToken ()
         {
           value = 17;
           state = DFA[state][value];
+	  //cout << "state " << state << endl;
         }
       else if(c == ' ')
         {
@@ -154,16 +145,25 @@ token_type LexicalAnalyzer::GetToken ()
         }
       else if(isalpha(c))
         {
+	  //cout << "hit" << endl;
           value = 19;
           state = DFA[state][value];
         }
       else if(c == '"')
         {
+	  cout << "Hit" << endl << endl;
           value = 20;
           state = DFA[state][value];
+	  cout << state << endl << endl;
         }
-      if(state == IDENT_T)
+      if(state == 0)
 	{
+	  word = "";
+	}
+      if(state == 101)
+	{
+	  word.erase(word.end()-1, word.end());
+	  cout << "|" << word << "|" << endl;
 	  if(word == "cons")
 	    state = CONS_T;
 	  else if (word == "if")
@@ -189,7 +189,7 @@ token_type LexicalAnalyzer::GetToken ()
 	  else if (word == "round")
 	    state = ROUND_T;	      
 	}
-      if(state == Predicate)
+      if(state == 135)
 	if(word == "number?")
 	  state = NUMBERP_T;
 	else if( word == "list?")
@@ -200,17 +200,29 @@ token_type LexicalAnalyzer::GetToken ()
 	  state = NULLP_T;
 	else if (word == "string?")
 	  state = STRINGP_T;
-      if(pos == line.length())
-	linenum++;
-      if (state == PLUS_T || state == MINUS_T || state == NUMLIT_T || state == IDENT_T || state == GT_T || state == LT_T)
+      if (state == 120 || state == 121 || state == 102 || state == 101 || state == 127 || state == 128 ||
+	  state == 104 || state == 105 || state == 106 || state == 107 || state == 108 || state == 109 ||
+	  state == 110 || state == 111 || state == 112 || state == 113 || state == 114)
 	{
 	  pos--;
-	  token = state;
+	  //cout << word << endl;
+	  token = token_type(state);
 	  done = true;
 	}
-      else if (state == LISTOP_T || state == EQUALTO_T || state == GTE_T || state == LTE_T || state == STRIT_T || state == DIV_T || state == MULT_T || state == LPAREN_T || state == RPAREN_T || state == SQUOTE_T || state == ERROR_T)
+      else if (state == 104 || state == 126 || state == 129 || state == 130 || state == 103 || state == 122 ||
+	       state == 123 || state == 131 || state == 132 || state == 133 || state == 134)
 	{
-	  token = state;
+	  //cout << word << endl;
+	  token = token_type(state);
+	  done = true;
+	}
+      if(pos == line.length())
+	{
+	  value = 18;
+	  state = DFA[state][value];
+	  linenum = linenum + 1;
+	  pos = -1;
+	  token = token_type(state);
 	  done = true;
 	}
       pos++;
@@ -222,8 +234,14 @@ token_type LexicalAnalyzer::GetToken ()
 string LexicalAnalyzer::GetTokenName (token_type t) const
 {
 	// The GetTokenName function returns a string containing the name of the
-	// token passed to it. 
-	return "";
+	// token passed to it.
+  int idx = 0;
+  string name = "";
+  idx = t - 100;
+  if (idx < 0)
+    idx = 0;
+  name = token_names[idx];
+  return name;
 }
 
 string LexicalAnalyzer::GetLexeme () const
