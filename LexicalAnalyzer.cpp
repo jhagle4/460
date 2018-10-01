@@ -7,46 +7,61 @@ using namespace std;
 
 static string token_names[] = {	"EOF_T", "IDENT_T", "NUMLIT_T", "STRLIT_T", "LISTOP", "CONS_T", "IF_T", "COND_T", "ELSE_T", "DISPLAY_T", "NEWLINE_T", "AND_T", "OR_T", "NOT_T", "DEFINE_T",
                  "NUMBERP_T", "LISTP_T", "ZEROP_T", "NULLP_T", "STRINGP_T", "PLUS_T", "MINUS_T", "DIV_T", "MULT_T", "MODULO_T", "ROUND_T", "EQUALTO_T", "GT_T", "LT_T", "GTE_T", "LTE_T",
-                 "LPAREN_T", "RPAREN_T", "SQUOTE_T", "ERROR_T"}; 
+                 "LPAREN_T", "RPAREN_T", "SQUOTE_T", "ERROR_T"};
+string filenameNoExtension;
 
+// This function will initialize the lexical analyzer class
+// The input is processed into the lines vector here
 LexicalAnalyzer::LexicalAnalyzer (char * filename)
 {
-  // This function will initialize the lexical analyzer class
-  vector<string> tmp;
-  string line = "";
-  ifstream input(filename);
-  while (getline(input, line))
+    string file = filename;
+    int extensionIndex = file.find_last_of(".");
+    if (file.substr(extensionIndex, file.size()) != ".ss") {
+        cout << "Invalid input file type" << endl;
+        return;
+    }
+    filenameNoExtension = file.substr(0, extensionIndex);
+
+    vector<string> tmp;
+    string line = "";
+    ifstream input(filename); //should be using the ifstream declared in the h file???
+    while (getline(input, line))
     {
       cout << line << endl;
       tmp.push_back(line);
     }
-  lines = tmp;
-  int linenum = 0;
-  int pos = 0;
-  string lexeme = "EOF_T";
-  int errors = 0;
+    lines = tmp;
+    linenum = 0; pos = 0; errors = 0;
+    token = EOF_T;
+    lexeme = "";
+    tokenFile.open(filenameNoExtension + ".p1");
+    listingFile.open(filenameNoExtension + ".lst");
+    listingFile << "Input file: " << filename << std::endl;
 }
 
+// This function will complete the execution of the lexical analyzer class
 LexicalAnalyzer::~LexicalAnalyzer ()
 {
-	// This function will complete the execution of the lexical analyzer class
+    listingFile << errors << " errors found in input file" << endl;
+    listingFile.close();
+    tokenFile.close();
 }
 
+// This function will find the next lexeme int the input file and return
+// the token_type value associated with that lexeme
 token_type LexicalAnalyzer::GetToken ()
 {
-  // This function will find the next lexeme int the input file and return
-  // the token_type value associated with that lexeme
   int state = 0;
   int value = 0;
   line = lines[linenum];
   char c;
-  string word = "";
+  lexeme = "";
   bool done = false;
   while(done == false)
     {
       c = line[pos];
-      word += c;
-      cout << word << endl;
+      lexeme += c;
+      //cout << lexeme << endl;
       if(c == '+')
 	{
 	  value = 0;
@@ -151,68 +166,68 @@ token_type LexicalAnalyzer::GetToken ()
         }
       else if(c == '"')
         {
-	  cout << "Hit" << endl << endl;
+	  //cout << "Hit" << endl << endl;
           value = 20;
           state = DFA[state][value];
-	  cout << state << endl << endl;
+	  //cout << state << endl << endl;
         }
       if(state == 0)
 	{
-	  word = "";
+	  lexeme = "";
 	}
       if(state == 101)
 	{
-	  word.erase(word.end()-1, word.end());
-	  cout << "|" << word << "|" << endl;
-	  if(word == "cons")
+	  lexeme.erase(lexeme.end()-1, lexeme.end());
+	  //cout << "|" << lexeme << "|" << endl;
+	  if(lexeme == "cons")
 	    state = CONS_T;
-	  else if (word == "if")
+	  else if (lexeme == "if")
 	    state = IF_T;
-	  else if (word == "else")
+	  else if (lexeme == "else")
 	    state = ELSE_T;
-	  else if (word == "cond")
+	  else if (lexeme == "cond")
 	    state = COND_T;
-	  else if (word == "display")
+	  else if (lexeme == "display")
 	    state = DISPLAY_T;
-	  else if (word == "newline")
+	  else if (lexeme == "newline")
 	    state = NEWLINE_T;
-	  else if (word == "and")
+	  else if (lexeme == "and")
 	    state = AND_T;
-	  else if (word == "or")
+	  else if (lexeme == "or")
 	    state = OR_T;
-	  else if (word == "not")
+	  else if (lexeme == "not")
 	    state = NOT_T;
-	  else if (word == "define")
+	  else if (lexeme == "define")
 	    state = DEFINE_T;
-	  else if (word == "modulo")
+	  else if (lexeme == "modulo")
 	    state = MODULO_T;
-	  else if (word == "round")
+	  else if (lexeme == "round")
 	    state = ROUND_T;	      
 	}
       if(state == 135)
-	if(word == "number?")
+	if(lexeme == "number?")
 	  state = NUMBERP_T;
-	else if( word == "list?")
+	else if( lexeme == "list?")
 	  state = LISTP_T;
-	else if(word == "zero?")
+	else if(lexeme == "zero?")
 	  state = ZEROP_T;
-	else if (word == "null?")
+	else if (lexeme == "null?")
 	  state = NULLP_T;
-	else if (word == "string?")
+	else if (lexeme == "string?")
 	  state = STRINGP_T;
       if (state == 120 || state == 121 || state == 102 || state == 101 || state == 127 || state == 128 ||
 	  state == 104 || state == 105 || state == 106 || state == 107 || state == 108 || state == 109 ||
 	  state == 110 || state == 111 || state == 112 || state == 113 || state == 114)
 	{
 	  pos--;
-	  //cout << word << endl;
+	  //cout << lexeme << endl;
 	  token = token_type(state);
 	  done = true;
 	}
       else if (state == 104 || state == 126 || state == 129 || state == 130 || state == 103 || state == 122 ||
 	       state == 123 || state == 131 || state == 132 || state == 133 || state == 134)
 	{
-	  //cout << word << endl;
+	  //cout << lexeme << endl;
 	  token = token_type(state);
 	  done = true;
 	}
@@ -220,6 +235,7 @@ token_type LexicalAnalyzer::GetToken ()
 	{
 	  value = 18;
 	  state = DFA[state][value];
+	  listingFile << "    " << linenum+1 << ": " << lines[linenum] << endl;
 	  linenum = linenum + 1;
 	  pos = -1;
 	  token = token_type(state);
@@ -227,14 +243,14 @@ token_type LexicalAnalyzer::GetToken ()
 	}
       pos++;
     }
-  
+    tokenFile << GetTokenName(token) << "   " << GetLexeme() << endl;
   return token;
 }
 
+// The GetTokenName function returns a string containing the name of the
+// token passed to it.
 string LexicalAnalyzer::GetTokenName (token_type t) const
 {
-	// The GetTokenName function returns a string containing the name of the
-	// token passed to it.
   int idx = 0;
   string name = "";
   idx = t - 100;
@@ -244,14 +260,20 @@ string LexicalAnalyzer::GetTokenName (token_type t) const
   return name;
 }
 
+// This function will return the lexeme found by the most recent call to
+// the get_token function
 string LexicalAnalyzer::GetLexeme () const
 {
-	// This function will return the lexeme found by the most recent call to 
-	// the get_token function
-	return "";
+    if (token != -1)
+        return lexeme;
+    else {
+        return NULL;
+    }
 }
 
 void LexicalAnalyzer::ReportError (const string & msg)
 {
-	// This function will be called to write an error message to a file
+    listingFile << "Error at " << linenum << "," << pos << ": ";
+    listingFile << msg << endl;
+    errors++;
 }

@@ -19,9 +19,10 @@ SyntacticalAnalyzer::SyntacticalAnalyzer (char * filename)
 		// write its name to the .p1 file
 		// write the corresponding lexeme to the .p1 file
 	}
+	lex -> ~LexicalAnalyzer();
 }
 
 SyntacticalAnalyzer::~SyntacticalAnalyzer ()
 {
-	delete lex;
+	lex -> ~LexicalAnalyzer();
 }
