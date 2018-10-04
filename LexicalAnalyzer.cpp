@@ -245,28 +245,26 @@ token_type LexicalAnalyzer::GetToken ()
 	  token = token_type(state);
 	  done = true;
 	}
+	pos ++;
       if(pos == line.length())
 	{
+          pos = 0;
+          linenum ++;
 	  if(state != 0)
 	  {
 	    cout << lexeme << endl;
 	    value = 18;
 	    state = DFA[state][value];
 	    cout << state << endl;
-	    linenum = linenum + 1;
-	    pos = -1;
 	    token = token_type(state);
 	    done = true;
 	  }
 	  else
 	    {
-	      pos = 0;
-	      linenum = linenum + 1;
 	      tokenFile << "   " << GetLexeme() << endl;
 	      return GetToken();
 	    }
 	}
-      pos++;
     }
     if (state == 134)
         ReportError("Invalid character found: " + lexeme);
