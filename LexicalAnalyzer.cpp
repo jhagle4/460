@@ -51,6 +51,8 @@ LexicalAnalyzer::~LexicalAnalyzer ()
 // the token_type value associated with that lexeme
 token_type LexicalAnalyzer::GetToken ()
 {
+    if (pos == 0)
+        listingFile << "    " << linenum+1 << ": " << lines[linenum] << endl;
   int state = 0;
   int value = 0;
   //cout << linenum << endl;
@@ -240,7 +242,6 @@ token_type LexicalAnalyzer::GetToken ()
 	       state == 123 || state == 124 || state == 125 || state == 131 || state == 132 || state == 133 ||
 	       state == 134 || state == 115 || state == 116 || state == 117 || state == 118 || state == 119)
 	{
-	  //cout << lexeme << endl;
 	  token = token_type(state);
 	  done = true;
 	}
@@ -252,7 +253,6 @@ token_type LexicalAnalyzer::GetToken ()
 	    value = 18;
 	    state = DFA[state][value];
 	    cout << state << endl;
-	    listingFile << "    " << linenum+1 << ": " << lines[linenum] << endl;
 	    linenum = linenum + 1;
 	    pos = -1;
 	    token = token_type(state);
@@ -260,15 +260,16 @@ token_type LexicalAnalyzer::GetToken ()
 	  }
 	  else
 	    {
-	      pos = -1;
+	      pos = 0;
 	      linenum = linenum + 1;
-	      listingFile << "    " << linenum << ": " << lines[linenum-1] << endl;
 	      tokenFile << "   " << GetLexeme() << endl;
 	      return GetToken();
 	    }
 	}
       pos++;
     }
+    if (state == 134)
+        ReportError("Invalid character found: " + lexeme);
     tokenFile << GetTokenName(token) << "   " << GetLexeme() << endl;
   return token;
 }
@@ -299,7 +300,7 @@ string LexicalAnalyzer::GetLexeme () const
 
 void LexicalAnalyzer::ReportError (const string & msg)
 {
-    listingFile << "Error at " << linenum << "," << pos << ": ";
+    listingFile << "Error at " << linenum+1 << "," << pos << ": ";
     listingFile << msg << endl;
     errors++;
 }
