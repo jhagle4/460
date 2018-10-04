@@ -69,8 +69,9 @@ token_type LexicalAnalyzer::GetToken ()
     {
       c = line[pos];
       lexeme += c;
+      //cout << "Back" << endl;
       cout << lexeme << endl;
-      cout << state << endl;
+      //cout << state << endl;
       if(c == '+')
 	{
 	  value = 0;
@@ -187,7 +188,7 @@ token_type LexicalAnalyzer::GetToken ()
       if(state == 101)
 	{
 	  lexeme.erase(lexeme.end()-1, lexeme.end());
-	  cout << "|" << lexeme << "|" << endl;
+	  //cout << "|" << lexeme << "|" << endl;
 	  if(lexeme == "cons")
 	    state = CONS_T;
 	  else if (lexeme == "if")
@@ -245,16 +246,26 @@ token_type LexicalAnalyzer::GetToken ()
 	}
       if(pos == line.length())
 	{
-	  if(lexeme != "");
+	  if(state != 0)
 	  {
+	    cout << lexeme << endl;
 	    value = 18;
 	    state = DFA[state][value];
+	    cout << state << endl;
 	    listingFile << "    " << linenum+1 << ": " << lines[linenum] << endl;
 	    linenum = linenum + 1;
 	    pos = -1;
 	    token = token_type(state);
 	    done = true;
 	  }
+	  else
+	    {
+	      pos = -1;
+	      linenum = linenum + 1;
+	      listingFile << "    " << linenum << ": " << lines[linenum-1] << endl;
+	      tokenFile << "   " << GetLexeme() << endl;
+	      return GetToken();
+	    }
 	}
       pos++;
     }

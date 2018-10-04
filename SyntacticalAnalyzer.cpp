@@ -12,9 +12,9 @@ SyntacticalAnalyzer::SyntacticalAnalyzer (char * filename)
 	token_type t;
 	while ((t = lex->GetToken()) != 100)
 	{
-	  cout << "T = " << t << endl;
-	  cout << token_type(t) << endl;
-	  cout << lex -> GetTokenName(t) << endl;
+	  //cout << "T = " << t << endl;
+	  //cout << token_type(t) << endl;
+	  //cout << lex -> GetTokenName(t) << endl;
 	  //return;
 		// get a token
 		// write its name to the .p1 file
