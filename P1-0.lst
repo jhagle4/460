@@ -1,0 +1,14 @@
+Input file: P1-0.ss
+    1: identifier ident_1 function
+    2: 0 123 1.1 -1.1 +1.1 12. -.1
+    3: "Hello world"
+    4: 
+    5: cons if cond display newline and or not define
+    6: car cdr cadr cddr ?number
+    7: number? list?$zero? null? string?
+    8: 
+    9: + - / * modulo round
+    10: = > < >= <=
+    11: ( ) 'a
+    12: 
+0 errors found in input file

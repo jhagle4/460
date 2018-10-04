@@ -10,8 +10,9 @@ SyntacticalAnalyzer::SyntacticalAnalyzer (char * filename)
 {
 	lex = new LexicalAnalyzer (filename);
 	token_type t;
-	while ((t = lex->GetToken()) != EOF_T)
+	while ((t = lex->GetToken()) != 100)
 	{
+	  cout << "T = " << t << endl;
 	  cout << token_type(t) << endl;
 	  cout << lex -> GetTokenName(t) << endl;
 	  //return;

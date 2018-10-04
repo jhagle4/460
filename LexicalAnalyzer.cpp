@@ -53,6 +53,14 @@ token_type LexicalAnalyzer::GetToken ()
 {
   int state = 0;
   int value = 0;
+  //cout << linenum << endl;
+  //cout << lines.size() << endl;
+  if (linenum == lines.size())
+    {
+      state = 100;
+      token = token_type(state);
+      return token;
+    }
   line = lines[linenum];
   char c;
   lexeme = "";
@@ -61,7 +69,8 @@ token_type LexicalAnalyzer::GetToken ()
     {
       c = line[pos];
       lexeme += c;
-      //cout << lexeme << endl;
+      cout << lexeme << endl;
+      cout << state << endl;
       if(c == '+')
 	{
 	  value = 0;
@@ -153,7 +162,7 @@ token_type LexicalAnalyzer::GetToken ()
           state = DFA[state][value];
 	  //cout << "state " << state << endl;
         }
-      else if(c == ' ')
+      else if(iswspace(c))
         {
           value = 18;
           state = DFA[state][value];
@@ -178,7 +187,7 @@ token_type LexicalAnalyzer::GetToken ()
       if(state == 101)
 	{
 	  lexeme.erase(lexeme.end()-1, lexeme.end());
-	  //cout << "|" << lexeme << "|" << endl;
+	  cout << "|" << lexeme << "|" << endl;
 	  if(lexeme == "cons")
 	    state = CONS_T;
 	  else if (lexeme == "if")
@@ -205,6 +214,7 @@ token_type LexicalAnalyzer::GetToken ()
 	    state = ROUND_T;	      
 	}
       if(state == 135)
+	{
 	if(lexeme == "number?")
 	  state = NUMBERP_T;
 	else if( lexeme == "list?")
@@ -215,6 +225,7 @@ token_type LexicalAnalyzer::GetToken ()
 	  state = NULLP_T;
 	else if (lexeme == "string?")
 	  state = STRINGP_T;
+	}
       if (state == 120 || state == 121 || state == 102 || state == 101 || state == 127 || state == 128 ||
 	  state == 104 || state == 105 || state == 106 || state == 107 || state == 108 || state == 109 ||
 	  state == 110 || state == 111 || state == 112 || state == 113 || state == 114)
@@ -225,7 +236,8 @@ token_type LexicalAnalyzer::GetToken ()
 	  done = true;
 	}
       else if (state == 104 || state == 126 || state == 129 || state == 130 || state == 103 || state == 122 ||
-	       state == 123 || state == 131 || state == 132 || state == 133 || state == 134)
+	       state == 123 || state == 124 || state == 125 || state == 131 || state == 132 || state == 133 ||
+	       state == 134 || state == 115 || state == 116 || state == 117 || state == 118 || state == 119)
 	{
 	  //cout << lexeme << endl;
 	  token = token_type(state);
@@ -233,13 +245,16 @@ token_type LexicalAnalyzer::GetToken ()
 	}
       if(pos == line.length())
 	{
-	  value = 18;
-	  state = DFA[state][value];
-	  listingFile << "    " << linenum+1 << ": " << lines[linenum] << endl;
-	  linenum = linenum + 1;
-	  pos = -1;
-	  token = token_type(state);
-	  done = true;
+	  if(lexeme != "");
+	  {
+	    value = 18;
+	    state = DFA[state][value];
+	    listingFile << "    " << linenum+1 << ": " << lines[linenum] << endl;
+	    linenum = linenum + 1;
+	    pos = -1;
+	    token = token_type(state);
+	    done = true;
+	  }
 	}
       pos++;
     }
