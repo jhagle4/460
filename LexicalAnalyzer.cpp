@@ -57,9 +57,11 @@ LexicalAnalyzer::~LexicalAnalyzer() {
 token_type LexicalAnalyzer::GetToken() {
     int state = 0;
     int value = 0;
-    if (linenum == lines.size()) {
+    if (linenum >= lines.size()) {
         state = 100;
         token = token_type(state);
+        debugFile << GetTokenName(token) << "   " << GetLexeme() << endl;
+        tokenFile << GetTokenName(token) << "   " << GetLexeme() << endl;
         return token;
     }
     if (pos == 0) {
@@ -142,7 +144,6 @@ token_type LexicalAnalyzer::GetToken() {
         } else {
             value = 0;
             state = 134;
-            pos ++;
         }
         if (state == 0) {
             lexeme = "";
@@ -187,7 +188,7 @@ token_type LexicalAnalyzer::GetToken() {
                 state = STRINGP_T;
         }
         if (state == 120 || state == 121 || state == 102 || state == 101 || state == 127 || state == 128 ||
-            state == 104 || state == 105 || state == 106 || state == 107 || state == 108 || state == 109 ||
+            state == 105 || state == 106 || state == 107 || state == 108 || state == 109 ||
             state == 110 || state == 111 || state == 112 || state == 113 || state == 114) {
             pos--;
             token = token_type(state);
@@ -198,6 +199,8 @@ token_type LexicalAnalyzer::GetToken() {
             token = token_type(state);
             done = true;
         }
+        if (state == 134)
+            ReportError("Invalid character found: " + lexeme);
         pos++;
         if (pos >= line.length()) {
             pos = 0;
@@ -208,13 +211,10 @@ token_type LexicalAnalyzer::GetToken() {
                 token = token_type(state);
                 done = true;
             } else {
-                //tokenFile << "   " << GetLexeme() << endl;
                 return GetToken();
             }
         }
     }
-    if (state == 134)
-        ReportError("Invalid character found: " + lexeme);
     debugFile << GetTokenName(token) << "   " << GetLexeme() << endl;
     tokenFile << GetTokenName(token) << "   " << GetLexeme() << endl;
     return token;
@@ -243,9 +243,9 @@ string LexicalAnalyzer::GetLexeme() const {
 }
 
 void LexicalAnalyzer::ReportError(const string &msg) {
-    listingFile << "Error at " << linenum + 1 << "," << pos << ": ";
+    listingFile << "Error at " << linenum + 1 << "," << pos + 1 << ": ";
     listingFile << msg << endl;
-    debugFile << "Error at " << linenum + 1 << "," << pos << ": ";
+    debugFile << "Error at " << linenum + 1 << "," << pos + 1 << ": ";
     debugFile << msg << endl;
     errors++;
 }
