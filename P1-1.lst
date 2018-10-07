@@ -1,0 +1,14 @@
+Input file: P1-1.ss
+    1: identifierident_1function
+    2: 01231.1-1.1+1.112.-.1
+    3: "Hello world"
+    4: 
+    5: consifconddisplaynewlineandornotdefine
+    6: carcdrcadrcddr?number
+    7: number?list?$zero?null?string?
+    8: 
+    9: +-/*moduloround
+    10: =><>=<=
+    11: ()'a
+    12: 
+0 errors found in input file
