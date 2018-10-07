@@ -247,7 +247,8 @@ token_type LexicalAnalyzer::GetToken ()
         {
           pos--;
           //cout << lexeme << endl;
-	  lexeme.erase(lexeme.end()-1, lexeme.end());
+	  if(c != ' ')
+	    lexeme.erase(lexeme.end()-1, lexeme.end());
           token = token_type(state);
           done = true;
         }
