@@ -261,14 +261,26 @@ token_type LexicalAnalyzer::GetToken ()
           token = token_type(state);
           done = true;
         }
+      if(state == 134 && error_flag == false)
+	{
+	  error_pos = pos;
+	  error_flag = true;
+	}
       if(pos >= line.length() - 1 || line.length() == 0)
         {
 	  //cout << "Hit" << endl;
           if (state == 0)
             {
+	      listingFile << "    " << linenum + 1 << ": " << lines[linenum] << endl;
+              if(error_flag)
+                {
+                  msg += line[error_pos];
+                  ReportError(msg);
+                  error_flag = false;
+                  msg.erase(msg.end()-1, msg.end());
+                }
               pos = 0;
               linenum = linenum + 1;
-              listingFile << "    " << linenum << ": " << lines[linenum-1] << endl;
               //tokenFile << GetTokenName(token) << "   " << GetLexeme() << endl;
               return GetToken();
             }
@@ -281,11 +293,18 @@ token_type LexicalAnalyzer::GetToken ()
 		  token = token_type(state);
 		  done = true;
 		}
+	      listingFile << "    " << linenum + 1 << ": " << lines[linenum] << endl;
+	      if(error_flag)
+                {
+                  msg += line[error_pos];
+                  ReportError(msg);
+		  error_flag = false;
+                  msg.erase(msg.end()-1, msg.end());
+                }
 	      cout << state << endl;
 	      pos = 0;
 	      linenum = linenum + 1;
 	      done = true;
-	      listingFile << "    " << linenum << ": " << lines[linenum-1] << endl;
 	    }
         }
       else
@@ -322,7 +341,7 @@ string LexicalAnalyzer::GetLexeme () const
 
 void LexicalAnalyzer::ReportError (const string & msg)
 {
-    listingFile << "Error at " << linenum << "," << pos << ": ";
+    listingFile << "Error at " << linenum+1 << "," << error_pos + 1 << ": ";
     listingFile << msg << endl;
     errors++;
 }

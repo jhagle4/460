@@ -5,11 +5,13 @@ Input file: P1-0.ss
     4: 
     5: cons if cond display newline and or not define
     6: car cdr cadr cddr ?number
+Error at 6,19: Invalid character found: ?
     7: number? list?$zero? null? string?
+Error at 7,14: Invalid character found: $
     8: 
     9: + - / * modulo round
     10: = > < >= <=
     11: ( ) 'a
     12: 
     13: 
-0 errors found in input file
+2 errors found in input file

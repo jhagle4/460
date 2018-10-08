@@ -1,14 +1,17 @@
 Input file: P1-1.ss
     1: identifierident_1function
     2: 01231.1-1.1+1.112.-.1
+Error at 2,18: Invalid character found: .
     3: "Hello world"
     4: 
     5: consifconddisplaynewlineandornotdefine
     6: carcdrcadrcddr?number
+Error at 6,15: Invalid character found: ?
     7: number?list?$zero?null?string?
+Error at 7,13: Invalid character found: $
     8: 
     9: +-/*moduloround
     10: =><>=<=
     11: ()'a
     12: 
-0 errors found in input file
+3 errors found in input file

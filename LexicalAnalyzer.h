@@ -45,10 +45,13 @@ class LexicalAnalyzer
 	    {LISTOP_T,LISTOP_T,5,5,5,5,5,5,Predicate,LISTOP_T,LISTOP_T,LISTOP_T,LISTOP_T,LISTOP_T,LISTOP_T,LISTOP_T,LISTOP_T,LISTOP_T,LISTOP_T,LISTOP_T,LISTOP_T,LISTOP_T}
 	  };
 	string line;
+	string msg = "Invalid character found: ";
 	int linenum;
 	int pos;
 	string lexeme;
 	int errors;
+	bool error_flag = false;
+	int error_pos = 0;
 };
 	
 #endif
