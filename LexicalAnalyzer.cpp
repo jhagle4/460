@@ -197,11 +197,6 @@ token_type LexicalAnalyzer::GetToken ()
 	{
 	  lexeme = "";
 	}
-      if(state == 102)
-	{
-	  if(lexeme == ".")
-	    state = 134;
-	}
       if(state == 101)
 	{
 	  lexeme.erase(lexeme.end()-1, lexeme.end());
@@ -254,6 +249,11 @@ token_type LexicalAnalyzer::GetToken ()
           //cout << lexeme << endl;
 	  if(c != ' ')
 	    lexeme.erase(lexeme.end()-1, lexeme.end());
+	  if(state == 102)
+	    {
+	      if(lexeme == ".")
+		state = 134;
+	    }
           token = token_type(state);
           done = true;
         }
