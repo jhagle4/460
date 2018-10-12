@@ -1,0 +1,12 @@
+Input file: P1-3.ss
+    1: car + cdr - cons / if * else = and >
+    2: or > not >= define <= number? ( string? ) list? '
+    3: shile let cond display newline less round modulo %
+Error at 3,50: Invalid character found: %
+    4: zero?  null?  char?  modulo cadr cddr caddr cdddr
+Error at 4,19: Invalid character found: ?
+    5: some more symbols and a line of numbers question ?
+Error at 5,50: Invalid character found: ?
+    6: 1 123 12.23 .34 123 -1 -2.2 +15 +.5 +5.
+    7: 
+3 errors found in input file
